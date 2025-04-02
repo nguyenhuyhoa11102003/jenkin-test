@@ -1,19 +1,21 @@
 pipeline {
-    agent { 
-        docker { 
-            image 'maven:3.9.9-eclipse-temurin-21-alpine' 
-            args '--entrypoint=""' 
-        } 
-    }
-    
+    agent none  
+
     stages {
         stage('Check Docker') {
+            agent { 
+                docker { 
+                    image 'maven:3.9.9-eclipse-temurin-21-alpine' 
+                    args '--entrypoint=""' 
+                } 
+            }
             steps {
                 sh 'docker --version || echo "Docker not found!"'
             }
         }
 
         stage('Build') {
+            agent { docker { image 'maven:3.9.9-eclipse-temurin-21-alpine' } }
             steps {
                 sh 'mvn --version'
                 sh 'echo "Hello World"'
@@ -23,9 +25,15 @@ pipeline {
                 '''
             }
         }
+        stage('Run Node.js') {
+            agent { docker { image 'node:22.14.0-alpine3.21' } }
+            steps {
+                sh 'node --version'
+                sh 'npm install'
+            }
+        }
     }
 
-    // 🔥 `post` phải đặt bên trong `pipeline`, KHÔNG ĐƯỢC đặt trong `stages`
     post {
         always {
             echo 'This will always run'
