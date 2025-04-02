@@ -5,7 +5,7 @@ pipeline {
             steps {
                 sh 'echo Hello world'
                 sh '''
-                    echo "Multiline shell steps works too"
+                    echo "Multiline shell steps works too1"
                     ls -lah
                 '''
             }
